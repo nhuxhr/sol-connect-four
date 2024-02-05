@@ -17,6 +17,10 @@ Sol Connect Four is a decentralized Connect Four game built on the Solana blockc
 4. **Make Your Move:** Take turns with your opponent making moves on the Connect Four board.
 5. **Win or Draw:** The game ends when a player achieves four in a row horizontally, vertically, or diagonally, or when the board is full (draw).
 
+## Video Demo
+
+https://github.com/nhuxhr/sol-connect-four/assets/51025764/31565518-7af8-459d-ba8b-5ad24bc264d7
+
 ## Screenshots
 
 | Screenshot                            |              Screenshots              |                           Screenshots |
