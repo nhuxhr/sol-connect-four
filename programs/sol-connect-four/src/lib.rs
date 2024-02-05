@@ -43,6 +43,18 @@ pub mod sol_connect_four {
         Ok(())
     }
 
+    pub fn cancel_game(ctx: Context<CancelGame>) -> Result<()> {
+        let game: &mut Account<'_, Game> = &mut ctx.accounts.game;
+
+        // Check if the game has not started
+        require!(
+            game.state == GameState::NotStarted,
+            SolConnectFourError::GameStarted
+        );
+
+        Ok(())
+    }
+
     pub fn join_game(ctx: Context<JoinGame>) -> Result<()> {
         let signer: &Signer<'_> = &ctx.accounts.signer;
         let game: &mut Account<'_, Game> = &mut ctx.accounts.game;

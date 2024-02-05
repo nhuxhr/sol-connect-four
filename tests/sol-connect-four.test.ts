@@ -111,6 +111,49 @@ describe("sol-connect-four", () => {
     });
   });
 
+  describe("Cancel Game", () => {
+    const g = new Game();
+
+    it("Create a new game", async () => {
+      await program.methods
+        .newGame(g.reference, new anchor.BN(web3.LAMPORTS_PER_SOL))
+        .accounts({
+          signer: accounts.foo.publicKey,
+          game: g.address,
+        })
+        .signers([accounts.foo])
+        .rpc();
+      const game = await program.account.game.fetch(g.address);
+      expect(game.reference).toEqual(g.reference);
+    });
+
+    it("Should fail if not the game creator", async () => {
+      await expect(
+        program.methods
+          .cancelGame()
+          .accounts({
+            signer: accounts.bar.publicKey,
+            game: g.address,
+          })
+          .signers([accounts.bar])
+          .rpc()
+      ).rejects.toThrow("Invalid player");
+    });
+
+    it("Cancel the game", async () => {
+      await program.methods
+        .cancelGame()
+        .accounts({
+          signer: accounts.foo.publicKey,
+          game: g.address,
+        })
+        .signers([accounts.foo])
+        .rpc();
+      const game = await program.account.game.fetchNullable(g.address);
+      expect(game).toEqual(null);
+    });
+  });
+
   describe("Default Game (Vertical Win)", () => {
     const g = new Game();
 
@@ -164,6 +207,19 @@ describe("sol-connect-four", () => {
             .signers([payer.payer])
             .rpc()
         ).rejects.toThrow("Game is full");
+      });
+
+      it("Should fail if attempting to cancel the game after a player joined", async () => {
+        await expect(
+          program.methods
+            .cancelGame()
+            .accounts({
+              signer: accounts.foo.publicKey,
+              game: g.address,
+            })
+            .signers([accounts.foo])
+            .rpc()
+        ).rejects.toThrow("Game started");
       });
     });
 

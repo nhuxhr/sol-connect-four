@@ -20,11 +20,23 @@ pub struct NewGame<'info> {
 }
 
 #[derive(Accounts)]
+pub struct CancelGame<'info> {
+    #[account(mut)]
+    pub signer: Signer<'info>,
+    #[account(
+        mut,
+        constraint = game.player0 == *signer.key @ SolConnectFourError::InvalidPlayer,
+        close = signer
+    )]
+    pub game: Account<'info, Game>,
+}
+
+#[derive(Accounts)]
 pub struct JoinGame<'info> {
     #[account(
-      mut,
-      constraint = game.player1.is_none() @ SolConnectFourError::GameFull,
-      constraint = game.player0 != *signer.key @ SolConnectFourError::InvalidPlayer,
+        mut,
+        constraint = game.player1.is_none() @ SolConnectFourError::GameFull,
+        constraint = game.player0 != *signer.key @ SolConnectFourError::InvalidPlayer,
     )]
     pub signer: Signer<'info>,
     #[account(mut)]
