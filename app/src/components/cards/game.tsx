@@ -197,7 +197,6 @@ export default function GameCard({ game: data }: Props) {
       };
     }
 
-    console.log("subscribing to game");
     event.addListener("change", (account) => {
       setAccount(account);
     });
